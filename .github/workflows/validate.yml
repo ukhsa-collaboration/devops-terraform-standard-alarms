@@ -19,26 +19,36 @@ env:
 
 jobs:
   docs:
-    name: Check Terraform docs
+    name: Ensures docs are up-to-date
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-    steps:
-    - name: Check out repository
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 1
-        persist-credentials: false
-        token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Verify terraform-docs is up to date
-      run: |
-        docker run --rm -v "$PWD":/workdir -w /workdir quay.io/terraform-docs/terraform-docs:latest markdown table --output-file README.md --output-mode inject .
-        if git diff --quiet README.md; then
-          echo "terraform-docs is up to date."
-          exit 0
-        fi
-        echo "terraform-docs is stale; please run terraform-docs locally and commit the changes."
-        exit 1
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # required for git diff correctness
+          persist-credentials: false
+
+      - name: Install terraform-docs
+        run: |
+          curl -sSLo terraform-docs.tar.gz \
+            https://github.com/terraform-docs/terraform-docs/releases/latest/download/terraform-docs-$(uname)-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz terraform-docs
+          sudo mv terraform-docs /usr/local/bin/
+          chmod +x /usr/local/bin/terraform-docs
+
+      - name: Run terraform-docs and check for diffs
+        run: |
+          terraform-docs markdown table --output-file README.md --output-mode inject .
+          if git diff --exit-code -- README.md >/dev/null; then
+            echo "terraform-docs output is up to date."
+          else
+            echo "terraform-docs output is stale. Please run terraform-docs and commit changes."
+            git --no-pager diff README.md
+            exit 1
+          fi
+
   
   lint:
     name: Terraform formatting
