@@ -18,6 +18,32 @@ env:
   TF_IN_AUTOMATION: true
 
 jobs:
+  docs:
+    name: Terraform formatting
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+
+    - name: Check out repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update terraform-docs
+      run: |
+        docker run --rm -v "$PWD":/workdir -w /workdir quay.io/terraform-docs/terraform-docs:latest markdown table --output-file README.md --output-mode inject .
+
+    - name: Verify terraform-docs is up to date
+      run: |
+        if git diff --quiet README.md; then
+          echo "terraform-docs is up to date."
+          exit 0
+        fi
+        echo "terraform-docs is stale; please run terraform-docs locally and commit the changes."
+        exit 1
+  
   lint:
     name: Terraform formatting
     runs-on: ubuntu-latest
