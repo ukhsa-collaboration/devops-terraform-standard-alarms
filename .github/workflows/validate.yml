@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-
     - name: Check out repository
       uses: actions/checkout@v5
       with:
@@ -31,12 +30,9 @@ jobs:
         persist-credentials: false
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Update terraform-docs
-      run: |
-        docker run --rm -v "$PWD":/workdir -w /workdir quay.io/terraform-docs/terraform-docs:latest markdown table --output-file README.md --output-mode inject .
-
     - name: Verify terraform-docs is up to date
       run: |
+        docker run --rm -v "$PWD":/workdir -w /workdir quay.io/terraform-docs/terraform-docs:latest markdown table --output-file README.md --output-mode inject .
         if git diff --quiet README.md; then
           echo "terraform-docs is up to date."
           exit 0
