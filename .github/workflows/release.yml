@@ -25,28 +25,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update terraform-docs
-        run: |
-          docker run --rm -v "$PWD":/workdir -w /workdir quay.io/terraform-docs/terraform-docs:latest markdown table --output-file README.md --output-mode inject .
       
-      - name: Configure git user
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit and push terraform-docs changes
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if git diff --quiet README.md; then
-            echo "No terraform-docs changes."
-            exit 0
-          fi
-          git add README.md
-          git commit -m "chore: update terraform-docs"
-          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
-
       - name: Determine next tag
         id: bump
         run: |
@@ -60,6 +39,12 @@ jobs:
           patch=${patch:-0}
           next="v${major}.${minor}.$((patch + 1))"
           echo "next=$next" >> "$GITHUB_OUTPUT"
+      
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Create tag
         run: git tag ${{ steps.bump.outputs.next }}
 

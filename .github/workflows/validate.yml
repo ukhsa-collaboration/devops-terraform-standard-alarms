@@ -18,6 +18,43 @@ env:
   TF_IN_AUTOMATION: true
 
 jobs:
+  docs:
+    name: Ensures docs are up-to-date
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install terraform-docs
+        run: |
+          version=$(curl -s https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest \
+            | grep tag_name | cut -d '"' -f 4 | sed 's/v//')
+          filename="terraform-docs-v${version}-$(uname | tr '[:upper:]' '[:lower:]')-amd64.tar.gz"
+
+          curl -sSLo terraform-docs.tar.gz \
+            "https://github.com/terraform-docs/terraform-docs/releases/download/v${version}/${filename}"
+
+          tar -xzf terraform-docs.tar.gz terraform-docs
+          sudo mv terraform-docs /usr/local/bin/
+          chmod +x /usr/local/bin/terraform-docs
+
+      - name: Run terraform-docs and check for diffs
+        run: |
+          terraform-docs markdown table --output-file README.md --output-mode inject .
+          if git diff --exit-code -- README.md >/dev/null; then
+            echo "terraform-docs output is up to date."
+          else
+            echo "terraform-docs output is stale. Please run terraform-docs and commit changes."
+            git --no-pager diff README.md
+            exit 1
+          fi
+
+  
   lint:
     name: Terraform formatting
     runs-on: ubuntu-latest
