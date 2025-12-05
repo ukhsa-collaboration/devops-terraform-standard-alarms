@@ -19,14 +19,14 @@ env:
 
 jobs:
   docs:
-    name: Terraform formatting
+    name: Check Terraform docs
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
     - name: Check out repository
       uses: actions/checkout@v5
       with:
-        fetch-depth: 0
+        fetch-depth: 1
         persist-credentials: false
         token: ${{ secrets.GITHUB_TOKEN }}
 
