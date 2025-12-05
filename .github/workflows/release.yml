@@ -29,6 +29,11 @@ jobs:
       - name: Update terraform-docs
         run: |
           docker run --rm -v "$PWD":/workdir -w /workdir quay.io/terraform-docs/terraform-docs:latest markdown table --output-file README.md --output-mode inject .
+      
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and push terraform-docs changes
         env:
@@ -55,12 +60,6 @@ jobs:
           patch=${patch:-0}
           next="v${major}.${minor}.$((patch + 1))"
           echo "next=$next" >> "$GITHUB_OUTPUT"
-
-      - name: Configure git user
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       - name: Create tag
         run: git tag ${{ steps.bump.outputs.next }}
 
