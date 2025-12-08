@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_cloudwatch_metric_alarm" "number_of_messages_published" {
-  for_each = local.sns_topics
+  for_each = var.enable_sns_publish_alarms ? local.sns_topics : {}
 
   # Intent            : "This alarm helps you proactively monitor and detect significant drops in notification publishing. This helps you identify potential issues with your application or business processes, so that you can take appropriate actions to maintain the expected flow of notifications. You should create this alarm if you expect your system to have a minimum traffic that it is serving."
   # Threshold Justification : "The number of messages published should be in line with the expected number of published messages for your application. You can also analyze the historical data, trends and traffic to find the right threshold."
@@ -25,7 +25,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_published" {
   datapoints_to_alarm = 5
   threshold           = 1
   comparison_operator = "LessThanThreshold"
-  treat_missing_data  = "breaching"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -98,7 +98,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_delivered_anomal
 }
 
 resource "aws_cloudwatch_metric_alarm" "number_of_notifications_failed" {
-  for_each = local.sns_topics
+  for_each = var.enable_sns_failure_alarms ? local.sns_topics : {}
 
   # Intent            : "This alarm helps you detect a spike in the volume of notification delivery failures or errors. This can be an indication of problems with your application or issues with the notification endpoints. This helps you detect and remediate issues quickly to ensure high availability of the notification delivery process."
   # Threshold Justification : "The threshold for failed notifications depends on the number of endpoints and the expected rate of notifications for your application. You can use historical data for the number of errors to set the threshold."
@@ -120,6 +120,6 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_failed" {
   datapoints_to_alarm = 5
   threshold           = 1
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "breaching"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
