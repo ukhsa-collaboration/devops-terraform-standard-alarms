@@ -161,6 +161,7 @@ locals {
     mapping.resource_arn => {
       function_name = element(split(":", mapping.resource_arn), length(split(":", mapping.resource_arn)) - 1)
     }
+    if try(mapping.tags["aws:cloudformation:logical-id"], "") != "CloudwatchAlarmNotificationLambda"
   }
 
   cloudfront_distributions = {

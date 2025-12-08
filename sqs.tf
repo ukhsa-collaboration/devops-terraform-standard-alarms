@@ -81,7 +81,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_visible" 
 }
 
 resource "aws_cloudwatch_metric_alarm" "number_of_messages_sent" {
-  for_each = local.sqs_queues
+  for_each = var.enable_sqs_producer_alarms ? local.sqs_queues : {}
 
   # Intent            : "This alarm is used to detect when a producer stops sending messages."
   # Threshold Justification : "If the number of messages sent is 0, the producer is not sending any messages. If this queue has a low TPS, increase the number of EvaluationPeriods accordingly. "

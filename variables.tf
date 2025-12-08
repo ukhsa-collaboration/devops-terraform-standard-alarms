@@ -32,6 +32,12 @@ variable "enable_sns_volume_alarms" {
   default     = false
 }
 
+variable "enable_sns_publish_alarms" {
+  description = "Whether to enable SNS NumberOfMessagesPublished alarms."
+  type        = bool
+  default     = false
+}
+
 variable "sns_topic_alarm_config" {
   description = "Per-SNS-topic delivery alarm configuration keyed by topic ARN."
   type = map(object({
@@ -43,6 +49,12 @@ variable "sns_topic_alarm_config" {
 
 variable "sns_enable_anomaly_detection" {
   description = "Enable anomaly detection for SNS delivery volume alarms."
+  type        = bool
+  default     = false
+}
+
+variable "enable_sns_failure_alarms" {
+  description = "Whether to enable SNS NumberOfNotificationsFailed alarms."
   type        = bool
   default     = false
 }
@@ -231,4 +243,10 @@ variable "sqs_number_of_messages_sent_threshold" {
   description = "Threshold for SQS NumberOfMessagesSent alarms."
   type        = number
   default     = 0
+}
+
+variable "enable_sqs_producer_alarms" {
+  description = "Whether to enable SQS producer (NumberOfMessagesSent) alarms."
+  type        = bool
+  default     = false
 }

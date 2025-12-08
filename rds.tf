@@ -130,7 +130,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_engine_uptime" {
   datapoints_to_alarm = 2
   threshold           = 0
   comparison_operator = "LessThanOrEqualToThreshold"
-  treat_missing_data  = "breaching"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
