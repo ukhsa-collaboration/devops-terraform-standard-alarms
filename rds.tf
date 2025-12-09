@@ -37,19 +37,35 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_utilization" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "CPUUtilization"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.rds_cpu_utilization_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "breaching"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "CPUUtilizationOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.rds_cpu_utilization_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "breaching"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "CPUUtilization"
+      namespace   = "AWS/RDS"
+      period      = 60
+      stat        = "Average"
+
+      dimensions = {
+        DBInstanceIdentifier = each.value.identifier
+      }
+    }
+  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_database_connections" {
@@ -91,19 +107,36 @@ resource "aws_cloudwatch_metric_alarm" "rds_db_load" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "DBLoad"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 15
+  datapoints_to_alarm       = 15
+  threshold                 = var.rds_db_load_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "missing"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "DBLoadOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 15
-  datapoints_to_alarm = 15
-  threshold           = var.rds_db_load_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "DBLoad"
+      namespace   = "AWS/RDS"
+      period      = 60
+      stat        = "Average"
+
+      dimensions = {
+        DBInstanceIdentifier = each.value.identifier
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_engine_uptime" {
@@ -118,20 +151,37 @@ resource "aws_cloudwatch_metric_alarm" "rds_engine_uptime" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "EngineUptime"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    Role                = "WRITER"
-    DBClusterIdentifier = each.value.identifier
+  evaluation_periods        = 2
+  datapoints_to_alarm       = 2
+  threshold                 = 0
+  comparison_operator       = "LessThanOrEqualToThreshold"
+  treat_missing_data        = "notBreaching"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "EngineUptimeOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 2
-  datapoints_to_alarm = 2
-  threshold           = 0
-  comparison_operator = "LessThanOrEqualToThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "EngineUptime"
+      namespace   = "AWS/RDS"
+      period      = 60
+      stat        = "Average"
+
+      dimensions = {
+        Role                 = "WRITER"
+        DBInstanceIdentifier = each.value.identifier
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_freeable_memory" {
