@@ -10,20 +10,36 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "CPUUtilization"
-  namespace                 = "AWS/ECS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    ServiceName = each.value.service_name
-    ClusterName = each.value.cluster_name
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.ecs_cpu_utilization_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "breaching"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "CPUUtilizationOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.ecs_cpu_utilization_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "breaching"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "CPUUtilization"
+      namespace   = "AWS/ECS"
+      period      = 60
+      stat        = "Average"
+
+      dimensions = {
+        ServiceName = each.value.service_name
+        ClusterName = each.value.cluster_name
+      }
+    }
+  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
@@ -38,18 +54,35 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "MemoryUtilization"
-  namespace                 = "AWS/ECS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    ServiceName = each.value.service_name
-    ClusterName = each.value.cluster_name
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.ecs_memory_utilization_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "breaching"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "MemoryUtilizationOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.ecs_memory_utilization_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "breaching"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "MemoryUtilization"
+      namespace   = "AWS/ECS"
+      period      = 60
+      stat        = "Average"
+
+      dimensions = {
+        ServiceName = each.value.service_name
+        ClusterName = each.value.cluster_name
+      }
+
+    }
+  }
+  tags = var.tags
 }

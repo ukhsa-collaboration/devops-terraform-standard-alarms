@@ -265,4 +265,6 @@ locals {
   )
 
   alarm_actions = compact([local.sns_topic_arn])
+
+  enabled_during_office_hours = var.alarm_schedule == "OfficeHours" ? ["OfficeHours"] : []
 }

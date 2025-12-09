@@ -65,6 +65,17 @@ variable "tags" {
   default     = {}
 }
 
+variable "alarm_schedule" {
+  description = "When alarms should evaluate. Use \"OfficeHours\" for Mon-Fri 09:00-17:00 UTC, otherwise alarms stay enabled 24x7."
+  type        = string
+  default     = "24x7"
+
+  validation {
+    condition     = var.alarm_schedule == "OfficeHours" || var.alarm_schedule == "24x7"
+    error_message = "alarm_schedule must be either \"24x7\" or \"OfficeHours\"."
+  }
+}
+
 variable "ecs_cpu_utilization_threshold" {
   description = "Threshold for ECS service CPUUtilization alarms."
   type        = number

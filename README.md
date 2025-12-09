@@ -90,6 +90,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_alarm_schedule"></a> [alarm\_schedule](#input\_alarm\_schedule) | When alarms should evaluate. Use "OfficeHours" for Mon-Fri 09:00-17:00 UTC, otherwise alarms stay enabled 24x7. | `string` | `"24x7"` | no |
 | <a name="input_alb_target_5xx_threshold"></a> [alb\_target\_5xx\_threshold](#input\_alb\_target\_5xx\_threshold) | Threshold for ALB HTTPCode\_Target\_5XX\_Count alarms. | `number` | `5` | no |
 | <a name="input_alb_target_response_time_threshold"></a> [alb\_target\_response\_time\_threshold](#input\_alb\_target\_response\_time\_threshold) | Threshold for ALB TargetResponseTime alarms in seconds. | `number` | `0.75` | no |
 | <a name="input_cloudfront_5xx_error_rate_threshold"></a> [cloudfront\_5xx\_error\_rate\_threshold](#input\_cloudfront\_5xx\_error\_rate\_threshold) | Threshold for CloudFront 5xxErrorRate alarms. | `number` | `1` | no |

@@ -38,13 +38,30 @@ resource "aws_cloudwatch_metric_alarm" "packets_drop_count" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "PacketsDropCount"
-  namespace                 = "AWS/NATGateway"
-  statistic                 = "Sum"
-  period                    = 60
-  dimensions = {
-    NatGatewayId = each.value.nat_gateway_id
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "PacketsDropCountOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "PacketsDropCount"
+      namespace   = "AWS/NATGateway"
+      period      = 60
+      stat        = "Sum"
+
+      dimensions = {
+        NatGatewayId = each.value.nat_gateway_id
+      }
+    }
+  }
+
   evaluation_periods  = 5
   datapoints_to_alarm = 5
   threshold           = 100

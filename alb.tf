@@ -10,19 +10,36 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "HTTPCode_Target_5XX_Count"
-  namespace                 = "AWS/ApplicationELB"
-  statistic                 = "Sum"
-  period                    = 300
-  dimensions = {
-    LoadBalancer = each.value.load_balancer_dimension
+  evaluation_periods        = 1
+  datapoints_to_alarm       = 1
+  threshold                 = var.alb_target_5xx_threshold
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  treat_missing_data        = "notBreaching"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "HTTPCode_Target_5XX_CountOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = var.alb_target_5xx_threshold
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "HTTPCode_Target_5XX_Count"
+      namespace   = "AWS/ApplicationELB"
+      period      = 300
+      stat        = "Sum"
+
+      dimensions = {
+        LoadBalancer = each.value.load_balancer_dimension
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
@@ -37,17 +54,34 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "TargetResponseTime"
-  namespace                 = "AWS/ApplicationELB"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    TargetGroup = each.value.target_group_dimension
+  evaluation_periods        = 3
+  datapoints_to_alarm       = 3
+  threshold                 = var.alb_target_response_time_threshold
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  treat_missing_data        = "notBreaching"
+
+  metric_query {
+    id          = "m2"
+    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
+    label       = "TargetResponseTimeOfficeHours"
+    return_data = length(local.enabled_during_office_hours) > 0
   }
-  evaluation_periods  = 3
-  datapoints_to_alarm = 3
-  threshold           = var.alb_target_response_time_threshold
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  metric_query {
+    id          = "m1"
+    return_data = length(local.enabled_during_office_hours) == 0
+
+    metric {
+      metric_name = "TargetResponseTime"
+      namespace   = "AWS/ApplicationELB"
+      period      = 60
+      stat        = "Average"
+
+      dimensions = {
+        TargetGroup = each.value.target_group_dimension
+      }
+    }
+  }
+
+  tags = var.tags
 }
