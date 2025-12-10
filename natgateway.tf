@@ -21,7 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "error_port_allocation" {
   datapoints_to_alarm = 15
   threshold           = 0
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -66,6 +66,6 @@ resource "aws_cloudwatch_metric_alarm" "packets_drop_count" {
   datapoints_to_alarm = 5
   threshold           = 100
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }

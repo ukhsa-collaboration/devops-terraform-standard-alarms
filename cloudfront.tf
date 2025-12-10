@@ -24,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_5xx_error_rate" {
   datapoints_to_alarm = 5
   threshold           = var.cloudfront_5xx_error_rate_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
   region              = "us-east-1"
 }
@@ -53,7 +53,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_origin_latency" {
   datapoints_to_alarm = 5
   threshold           = var.cloudfront_origin_latency_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
   region              = "us-east-1"
 }

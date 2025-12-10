@@ -46,7 +46,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_concurrent_executions" {
   datapoints_to_alarm = 10
   threshold           = var.lambda_concurrent_executions_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -73,7 +73,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_duration" {
   datapoints_to_alarm = 15
   threshold           = var.lambda_duration_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -100,7 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   datapoints_to_alarm = 3
   threshold           = var.lambda_errors_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -127,6 +127,6 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   datapoints_to_alarm = 5
   threshold           = var.lambda_throttles_threshold
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }

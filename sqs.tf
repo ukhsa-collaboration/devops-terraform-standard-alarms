@@ -21,7 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_age_of_oldest_message" {
   datapoints_to_alarm = 15
   threshold           = var.sqs_age_of_oldest_message_threshold
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_not_visib
   datapoints_to_alarm = 15
   threshold           = var.sqs_messages_not_visible_threshold
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -76,7 +76,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_visible" 
   datapoints_to_alarm = 15
   threshold           = var.sqs_messages_visible_threshold
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -103,6 +103,6 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_sent" {
   datapoints_to_alarm = 15
   threshold           = var.sqs_number_of_messages_sent_threshold
   comparison_operator = "LessThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }

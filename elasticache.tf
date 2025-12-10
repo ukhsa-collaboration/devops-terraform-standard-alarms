@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   datapoints_to_alarm = 5
   threshold           = var.elasticache_cpu_utilization_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -52,7 +52,7 @@ resource "aws_cloudwatch_metric_alarm" "curr_connections" {
   datapoints_to_alarm = 10
   threshold           = var.elasticache_curr_connections_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -80,7 +80,7 @@ resource "aws_cloudwatch_metric_alarm" "database_memory_usage_percentage" {
   datapoints_to_alarm = 5
   threshold           = var.elasticache_database_memory_usage_percentage_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -107,7 +107,7 @@ resource "aws_cloudwatch_metric_alarm" "engine_cpu_utilization" {
   datapoints_to_alarm = 5
   threshold           = var.elasticache_engine_cpu_utilization_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -135,6 +135,6 @@ resource "aws_cloudwatch_metric_alarm" "replication_lag" {
   datapoints_to_alarm = 15
   threshold           = var.elasticache_replication_lag_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }

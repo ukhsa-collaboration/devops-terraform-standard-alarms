@@ -19,6 +19,6 @@ resource "aws_cloudwatch_metric_alarm" "waf_blocked_requests" {
   datapoints_to_alarm = 1
   threshold           = var.waf_blocked_requests_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
