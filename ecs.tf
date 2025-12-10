@@ -14,7 +14,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   datapoints_to_alarm       = 5
   threshold                 = var.ecs_cpu_utilization_threshold
   comparison_operator       = "GreaterThanThreshold"
-  treat_missing_data        = "breaching"
+  treat_missing_data        = "missing"
 
   metric_query {
     id          = "m2"
@@ -58,7 +58,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   datapoints_to_alarm       = 5
   threshold                 = var.ecs_memory_utilization_threshold
   comparison_operator       = "GreaterThanThreshold"
-  treat_missing_data        = "breaching"
+  treat_missing_data        = "missing"
 
   metric_query {
     id          = "m2"

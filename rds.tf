@@ -21,7 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_buffer_cache_hit_ratio" {
   datapoints_to_alarm = 10
   threshold           = var.rds_buffer_cache_hit_ratio_threshold
   comparison_operator = "LessThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -111,7 +111,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_db_load" {
   datapoints_to_alarm       = 15
   threshold                 = var.rds_db_load_threshold
   comparison_operator       = "GreaterThanThreshold"
-  treat_missing_data        = "missing"
+  treat_missing_data        = "notBreaching"
 
   metric_query {
     id          = "m2"
@@ -234,7 +234,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_maximum_used_transaction_ids" {
   datapoints_to_alarm = 1
   threshold           = var.rds_maximum_used_transaction_ids_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -261,7 +261,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   datapoints_to_alarm = 5
   threshold           = var.rds_read_latency_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -289,7 +289,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_storage_network_throughput" {
   datapoints_to_alarm = 5
   threshold           = var.rds_storage_network_throughput_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
@@ -316,6 +316,6 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   datapoints_to_alarm = 5
   threshold           = var.rds_write_latency_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }

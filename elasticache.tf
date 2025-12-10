@@ -52,7 +52,7 @@ resource "aws_cloudwatch_metric_alarm" "curr_connections" {
   datapoints_to_alarm = 10
   threshold           = var.elasticache_curr_connections_threshold
   comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "missing"
+  treat_missing_data  = "notBreaching"
   tags                = var.tags
 }
 
