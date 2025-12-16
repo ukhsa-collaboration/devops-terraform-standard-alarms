@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_published" {
   }
   evaluation_periods  = 5
   datapoints_to_alarm = 5
-  threshold           = 1
+  threshold           = var.sns_messages_published_threshold
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "notBreaching"
   tags                = var.tags
@@ -118,7 +118,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_failed" {
   }
   evaluation_periods  = 5
   datapoints_to_alarm = 5
-  threshold           = 1
+  threshold           = var.sns_notifications_failed_threshold
   comparison_operator = "GreaterThanThreshold"
   treat_missing_data  = "notBreaching"
   tags                = var.tags

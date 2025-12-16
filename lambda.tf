@@ -10,17 +10,54 @@ resource "aws_cloudwatch_metric_alarm" "lambda_claimed_account_concurrency" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "ClaimedAccountConcurrency"
-  namespace                 = "AWS/Lambda"
-  statistic                 = "Maximum"
-  period                    = 60
-  dimensions                = {}
   evaluation_periods        = 10
   datapoints_to_alarm       = 10
   threshold                 = var.lambda_claimed_account_concurrency_threshold
   comparison_operator       = "GreaterThanThreshold"
   treat_missing_data        = "notBreaching"
-  tags                      = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "ClaimedAccountConcurrencyOfficeHours"
+      return_data = true
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "ClaimedAccountConcurrency"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Maximum"
+        dimensions  = {}
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "ClaimedAccountConcurrency"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Maximum"
+        dimensions  = {}
+      }
+    }
+  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_concurrent_executions" {
@@ -35,19 +72,60 @@ resource "aws_cloudwatch_metric_alarm" "lambda_concurrent_executions" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "ConcurrentExecutions"
-  namespace                 = "AWS/Lambda"
-  statistic                 = "Maximum"
-  period                    = 60
-  dimensions = {
-    FunctionName = each.value.function_name
+  evaluation_periods        = 10
+  datapoints_to_alarm       = 10
+  threshold                 = var.lambda_concurrent_executions_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "ConcurrentExecutionsOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 10
-  datapoints_to_alarm = 10
-  threshold           = var.lambda_concurrent_executions_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "ConcurrentExecutions"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Maximum"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "ConcurrentExecutions"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Maximum"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_duration" {
@@ -62,19 +140,60 @@ resource "aws_cloudwatch_metric_alarm" "lambda_duration" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "Duration"
-  namespace                 = "AWS/Lambda"
-  extended_statistic        = "p90"
-  period                    = 60
-  dimensions = {
-    FunctionName = each.value.function_name
+  evaluation_periods        = 15
+  datapoints_to_alarm       = 15
+  threshold                 = var.lambda_duration_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "DurationOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 15
-  datapoints_to_alarm = 15
-  threshold           = var.lambda_duration_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "Duration"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "p90"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "Duration"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "p90"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
@@ -89,19 +208,60 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "Errors"
-  namespace                 = "AWS/Lambda"
-  statistic                 = "Sum"
-  period                    = 60
-  dimensions = {
-    FunctionName = each.value.function_name
+  evaluation_periods        = 3
+  datapoints_to_alarm       = 3
+  threshold                 = var.lambda_errors_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "ErrorsOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 3
-  datapoints_to_alarm = 3
-  threshold           = var.lambda_errors_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "Errors"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "Errors"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
@@ -116,17 +276,58 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "Throttles"
-  namespace                 = "AWS/Lambda"
-  statistic                 = "Sum"
-  period                    = 60
-  dimensions = {
-    FunctionName = each.value.function_name
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.lambda_throttles_threshold
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "ThrottlesOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.lambda_throttles_threshold
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "Throttles"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "Throttles"
+        namespace   = "AWS/Lambda"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          FunctionName = each.value.function_name
+        }
+      }
+    }
+  }
+  tags = var.tags
 }

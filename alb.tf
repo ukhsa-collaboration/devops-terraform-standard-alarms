@@ -16,25 +16,50 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   treat_missing_data        = "notBreaching"
 
-  metric_query {
-    id          = "m2"
-    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
-    label       = "HTTPCode_Target_5XX_CountOfficeHours"
-    return_data = length(local.enabled_during_office_hours) > 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "HTTPCode_Target_5XX_CountOfficeHours"
+      return_data = true
+    }
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = length(local.enabled_during_office_hours) == 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
 
-    metric {
-      metric_name = "HTTPCode_Target_5XX_Count"
-      namespace   = "AWS/ApplicationELB"
-      period      = 300
-      stat        = "Sum"
+      metric {
+        metric_name = "HTTPCode_Target_5XX_Count"
+        namespace   = "AWS/ApplicationELB"
+        period      = 300
+        stat        = "Sum"
 
-      dimensions = {
-        LoadBalancer = each.value.load_balancer_dimension
+        dimensions = {
+          LoadBalancer = each.value.load_balancer_dimension
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "HTTPCode_Target_5XX_Count"
+        namespace   = "AWS/ApplicationELB"
+        period      = 300
+        stat        = "Sum"
+
+        dimensions = {
+          LoadBalancer = each.value.load_balancer_dimension
+        }
       }
     }
   }
@@ -60,25 +85,50 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   treat_missing_data        = "notBreaching"
 
-  metric_query {
-    id          = "m2"
-    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
-    label       = "TargetResponseTimeOfficeHours"
-    return_data = length(local.enabled_during_office_hours) > 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "TargetResponseTimeOfficeHours"
+      return_data = true
+    }
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = length(local.enabled_during_office_hours) == 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
 
-    metric {
-      metric_name = "TargetResponseTime"
-      namespace   = "AWS/ApplicationELB"
-      period      = 60
-      stat        = "Average"
+      metric {
+        metric_name = "TargetResponseTime"
+        namespace   = "AWS/ApplicationELB"
+        period      = 60
+        stat        = "Average"
 
-      dimensions = {
-        TargetGroup = each.value.target_group_dimension
+        dimensions = {
+          TargetGroup = each.value.target_group_dimension
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "TargetResponseTime"
+        namespace   = "AWS/ApplicationELB"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          TargetGroup = each.value.target_group_dimension
+        }
       }
     }
   }
