@@ -10,7 +10,7 @@ Configure alarms to only evaluate during business hours to prevent alerts during
 ```hcl
 module "alarms" {
   source = "git@github.com:ukhsa-collaboration/devops-terraform-standard-alarms.git"
-  
+
   # Enable office hours scheduling (Monday-Friday 09:00-17:00 UTC)
   alarm_schedule = "OfficeHours"
 }
@@ -33,15 +33,15 @@ All alarm thresholds are configurable via variables with validation:
 ```hcl
 module "alarms" {
   source = "git@github.com:ukhsa-collaboration/devops-terraform-standard-alarms.git"
-  
+
   # ECS thresholds
   ecs_cpu_utilization_threshold    = 85
   ecs_memory_utilization_threshold = 85
-  
+
   # Lambda thresholds  
   lambda_duration_threshold = 5000
   lambda_errors_threshold   = 2
-  
+
   # Certificate expiry threshold
   certificate_days_to_expiry_threshold = 30
 }
@@ -66,7 +66,7 @@ module "alarms" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.26.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 

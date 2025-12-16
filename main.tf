@@ -313,7 +313,7 @@ locals {
   always_active_expression = "m1"
 
   # Missing Data Treatment Standards
-  # 
+  #
   # This module applies standardized missing data treatment based on alarm type:
   #
   # 1. UTILIZATION METRICS (treat_missing_data = "missing"):
