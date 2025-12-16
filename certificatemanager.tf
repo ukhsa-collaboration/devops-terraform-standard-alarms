@@ -2,7 +2,7 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry" {
   for_each = local.acm_certificates_regional
 
   # Intent            : "This alarm can proactively alert you about upcoming certificate expirations. It provides sufficient advance notice to allow for manual intervention, enabling you to renew or replace certificates before they expire. This helps you maintain the security and availability of TLS-enabled services. When this goes into ALARM, immediately investigate the certificate status and initiate the renewal process if necessary."
-  # Threshold Justification : "The 44-day threshold provides a balance between early warning and avoiding false alarms. It allows sufficient time for manual intervention if automatic renewal fails. Adjust this value based on your certificate renewal process and operational response times."
+  # Threshold Justification : "The threshold provides a balance between early warning and avoiding false alarms. It allows sufficient time for manual intervention if automatic renewal fails. Adjust this value based on your certificate renewal process and operational response times."
 
   alarm_name                = format("cw-acm-%s-daystoexpiry", replace(lower(element(split("/", each.value.certificate_arn), length(split("/", each.value.certificate_arn)) - 1)), ":", "-"))
   alarm_description         = "Certificate nearing expiry; renew or re-import soon to avoid outages."
@@ -19,7 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry" {
   }
   evaluation_periods  = 1
   datapoints_to_alarm = 1
-  threshold           = 44
+  threshold           = var.certificate_days_to_expiry_threshold
   comparison_operator = "LessThanOrEqualToThreshold"
   treat_missing_data  = "breaching"
   tags                = var.tags
@@ -29,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry_cdn" {
   for_each = local.acm_certificates
 
   # Intent            : "This alarm can proactively alert you about upcoming certificate expirations. It provides sufficient advance notice to allow for manual intervention, enabling you to renew or replace certificates before they expire. This helps you maintain the security and availability of TLS-enabled services. When this goes into ALARM, immediately investigate the certificate status and initiate the renewal process if necessary."
-  # Threshold Justification : "The 44-day threshold provides a balance between early warning and avoiding false alarms. It allows sufficient time for manual intervention if automatic renewal fails. Adjust this value based on your certificate renewal process and operational response times."
+  # Threshold Justification : "The threshold provides a balance between early warning and avoiding false alarms. It allows sufficient time for manual intervention if automatic renewal fails. Adjust this value based on your certificate renewal process and operational response times."
 
   alarm_name                = format("cw-acm-%s-daystoexpiry", replace(lower(element(split("/", each.value.certificate_arn), length(split("/", each.value.certificate_arn)) - 1)), ":", "-"))
   alarm_description         = "Certificate nearing expiry; renew or re-import soon to avoid outages."
@@ -46,7 +46,7 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry_cdn" {
   }
   evaluation_periods  = 1
   datapoints_to_alarm = 1
-  threshold           = 44
+  threshold           = var.certificate_days_to_expiry_threshold
   comparison_operator = "LessThanOrEqualToThreshold"
   treat_missing_data  = "breaching"
   region              = "us-east-1"

@@ -10,19 +10,61 @@ resource "aws_cloudwatch_metric_alarm" "error_port_allocation" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "ErrorPortAllocation"
-  namespace                 = "AWS/NATGateway"
-  statistic                 = "Sum"
-  period                    = 60
-  dimensions = {
-    NatGatewayId = each.value.nat_gateway_id
+  evaluation_periods        = 15
+  datapoints_to_alarm       = 15
+  threshold                 = var.natgateway_error_port_allocation_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "ErrorPortAllocationOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 15
-  datapoints_to_alarm = 15
-  threshold           = 0
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "ErrorPortAllocation"
+        namespace   = "AWS/NATGateway"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          NatGatewayId = each.value.nat_gateway_id
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "ErrorPortAllocation"
+        namespace   = "AWS/NATGateway"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          NatGatewayId = each.value.nat_gateway_id
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "packets_drop_count" {
@@ -39,32 +81,57 @@ resource "aws_cloudwatch_metric_alarm" "packets_drop_count" {
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
 
-  metric_query {
-    id          = "m2"
-    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
-    label       = "PacketsDropCountOfficeHours"
-    return_data = length(local.enabled_during_office_hours) > 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "PacketsDropCountOfficeHours"
+      return_data = true
+    }
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = length(local.enabled_during_office_hours) == 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
 
-    metric {
-      metric_name = "PacketsDropCount"
-      namespace   = "AWS/NATGateway"
-      period      = 60
-      stat        = "Sum"
+      metric {
+        metric_name = "PacketsDropCount"
+        namespace   = "AWS/NATGateway"
+        period      = 60
+        stat        = "Sum"
 
-      dimensions = {
-        NatGatewayId = each.value.nat_gateway_id
+        dimensions = {
+          NatGatewayId = each.value.nat_gateway_id
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "PacketsDropCount"
+        namespace   = "AWS/NATGateway"
+        period      = 60
+        stat        = "Sum"
+
+        dimensions = {
+          NatGatewayId = each.value.nat_gateway_id
+        }
       }
     }
   }
 
   evaluation_periods  = 5
   datapoints_to_alarm = 5
-  threshold           = 100
+  threshold           = var.natgateway_packets_drop_count_threshold
   comparison_operator = "GreaterThanThreshold"
   treat_missing_data  = "notBreaching"
   tags                = var.tags

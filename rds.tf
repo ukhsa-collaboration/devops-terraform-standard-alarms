@@ -10,19 +10,61 @@ resource "aws_cloudwatch_metric_alarm" "rds_buffer_cache_hit_ratio" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "BufferCacheHitRatio"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 10
+  datapoints_to_alarm       = 10
+  threshold                 = var.rds_buffer_cache_hit_ratio_threshold
+  comparison_operator       = "LessThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "BufferCacheHitRatioOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 10
-  datapoints_to_alarm = 10
-  threshold           = var.rds_buffer_cache_hit_ratio_threshold
-  comparison_operator = "LessThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "BufferCacheHitRatio"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "BufferCacheHitRatio"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_cpu_utilization" {
@@ -41,27 +83,52 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_utilization" {
   datapoints_to_alarm       = 5
   threshold                 = var.rds_cpu_utilization_threshold
   comparison_operator       = "GreaterThanThreshold"
-  treat_missing_data        = "breaching"
+  treat_missing_data        = "missing"
 
-  metric_query {
-    id          = "m2"
-    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
-    label       = "CPUUtilizationOfficeHours"
-    return_data = length(local.enabled_during_office_hours) > 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "CPUUtilizationOfficeHours"
+      return_data = true
+    }
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = length(local.enabled_during_office_hours) == 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
 
-    metric {
-      metric_name = "CPUUtilization"
-      namespace   = "AWS/RDS"
-      period      = 60
-      stat        = "Average"
+      metric {
+        metric_name = "CPUUtilization"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
 
-      dimensions = {
-        DBInstanceIdentifier = each.value.identifier
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "CPUUtilization"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
       }
     }
   }
@@ -80,19 +147,61 @@ resource "aws_cloudwatch_metric_alarm" "rds_database_connections" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "DatabaseConnections"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.rds_database_connections_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "missing"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "DatabaseConnectionsOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.rds_database_connections_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "breaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "DatabaseConnections"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "DatabaseConnections"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_db_load" {
@@ -113,25 +222,50 @@ resource "aws_cloudwatch_metric_alarm" "rds_db_load" {
   comparison_operator       = "GreaterThanThreshold"
   treat_missing_data        = "notBreaching"
 
-  metric_query {
-    id          = "m2"
-    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
-    label       = "DBLoadOfficeHours"
-    return_data = length(local.enabled_during_office_hours) > 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "DBLoadOfficeHours"
+      return_data = true
+    }
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = length(local.enabled_during_office_hours) == 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
 
-    metric {
-      metric_name = "DBLoad"
-      namespace   = "AWS/RDS"
-      period      = 60
-      stat        = "Average"
+      metric {
+        metric_name = "DBLoad"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
 
-      dimensions = {
-        DBInstanceIdentifier = each.value.identifier
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "DBLoad"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
       }
     }
   }
@@ -155,28 +289,54 @@ resource "aws_cloudwatch_metric_alarm" "rds_engine_uptime" {
   datapoints_to_alarm       = 2
   threshold                 = 0
   comparison_operator       = "LessThanOrEqualToThreshold"
-  treat_missing_data        = "notBreaching"
+  treat_missing_data        = "breaching"
 
-  metric_query {
-    id          = "m2"
-    expression  = "IF((DAY(m1)<6 AND (HOUR(m1)>=9 AND HOUR(m1)<17)),m1)"
-    label       = "EngineUptimeOfficeHours"
-    return_data = length(local.enabled_during_office_hours) > 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "EngineUptimeOfficeHours"
+      return_data = true
+    }
   }
 
-  metric_query {
-    id          = "m1"
-    return_data = length(local.enabled_during_office_hours) == 0
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
 
-    metric {
-      metric_name = "EngineUptime"
-      namespace   = "AWS/RDS"
-      period      = 60
-      stat        = "Average"
+      metric {
+        metric_name = "EngineUptime"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
 
-      dimensions = {
-        Role                 = "WRITER"
-        DBInstanceIdentifier = each.value.identifier
+        dimensions = {
+          Role                 = "WRITER"
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "EngineUptime"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          Role                 = "WRITER"
+          DBInstanceIdentifier = each.value.identifier
+        }
       }
     }
   }
@@ -196,19 +356,61 @@ resource "aws_cloudwatch_metric_alarm" "rds_freeable_memory" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "FreeableMemory"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 15
+  datapoints_to_alarm       = 15
+  threshold                 = var.rds_freeable_memory_threshold
+  comparison_operator       = "LessThanThreshold"
+  treat_missing_data        = "missing"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "FreeableMemoryOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 15
-  datapoints_to_alarm = 15
-  threshold           = var.rds_freeable_memory_threshold
-  comparison_operator = "LessThanThreshold"
-  treat_missing_data  = "breaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "FreeableMemory"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "FreeableMemory"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_maximum_used_transaction_ids" {
@@ -223,19 +425,61 @@ resource "aws_cloudwatch_metric_alarm" "rds_maximum_used_transaction_ids" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "MaximumUsedTransactionIDs"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 1
+  datapoints_to_alarm       = 1
+  threshold                 = var.rds_maximum_used_transaction_ids_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "MaximumUsedTransactionIDsOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = var.rds_maximum_used_transaction_ids_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "MaximumUsedTransactionIDs"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "MaximumUsedTransactionIDs"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
@@ -250,19 +494,61 @@ resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "ReadLatency"
-  namespace                 = "AWS/RDS"
-  extended_statistic        = "p90"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.rds_read_latency_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "ReadLatencyOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.rds_read_latency_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "ReadLatency"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "p90"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "ReadLatency"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "p90"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_storage_network_throughput" {
@@ -277,20 +563,63 @@ resource "aws_cloudwatch_metric_alarm" "rds_storage_network_throughput" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "StorageNetworkThroughput"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  period                    = 60
-  dimensions = {
-    Role                = "WRITER"
-    DBClusterIdentifier = each.value.identifier
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.rds_storage_network_throughput_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "StorageNetworkThroughputOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.rds_storage_network_throughput_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "StorageNetworkThroughput"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          Role                = "WRITER"
+          DBClusterIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "StorageNetworkThroughput"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          Role                = "WRITER"
+          DBClusterIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
@@ -305,17 +634,59 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   ok_actions                = local.alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
-  metric_name               = "WriteLatency"
-  namespace                 = "AWS/RDS"
-  extended_statistic        = "p90"
-  period                    = 60
-  dimensions = {
-    DBInstanceIdentifier = each.value.identifier
+  evaluation_periods        = 5
+  datapoints_to_alarm       = 5
+  threshold                 = var.rds_write_latency_threshold
+  comparison_operator       = "GreaterThanThreshold"
+  treat_missing_data        = "notBreaching"
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m2"
+      expression  = local.office_hours_expression
+      label       = "WriteLatencyOfficeHours"
+      return_data = true
+    }
   }
-  evaluation_periods  = 5
-  datapoints_to_alarm = 5
-  threshold           = var.rds_write_latency_threshold
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  tags                = var.tags
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = false
+
+      metric {
+        metric_name = "WriteLatency"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "p90"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) == 0 ? [1] : []
+    content {
+      id          = "m1"
+      return_data = true
+
+      metric {
+        metric_name = "WriteLatency"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "p90"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
+    }
+  }
+
+  tags = var.tags
 }
