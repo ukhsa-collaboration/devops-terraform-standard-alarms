@@ -11,7 +11,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_published" {
   alarm_name                = format("cw-sns-%s-numberofmessagespublished", replace(lower(each.value.topic_name), "/", "-"))
   alarm_description         = "SNS publishes dropped; check publishers and upstream traffic."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "NumberOfMessagesPublished"
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_delivered" {
   alarm_name                = format("cw-sns-%s-numberofnotificationsdelivered", replace(lower(each.value.topic_name), "/", "-"))
   alarm_description         = "SNS deliveries low; check subscriber health and recent unsubscribes."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "NumberOfNotificationsDelivered"
@@ -65,7 +65,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_delivered_anomal
   alarm_name                = format("cw-sns-%s-numberofnotificationsdelivered", replace(lower(each.value.topic_name), "/", "-"))
   alarm_description         = "SNS deliveries low; check subscriber health and recent unsubscribes."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   comparison_operator       = "LessThanLowerThreshold"
@@ -106,7 +106,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_failed" {
   alarm_name                = format("cw-sns-%s-numberofnotificationsfailed", replace(lower(each.value.topic_name), "/", "-"))
   alarm_description         = "SNS notification failures spiking; inspect endpoint health and retry logic."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "NumberOfNotificationsFailed"

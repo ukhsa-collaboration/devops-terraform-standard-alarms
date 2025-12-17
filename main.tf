@@ -272,18 +272,6 @@ locals {
   office_hours_start_hour = 9  # 09:00 UTC
   office_hours_end_hour   = 17 # 17:00 UTC (5:00 PM)
 
-  # Buffer time calculations with minute-level precision
-  office_hours_buffer_hours = floor(var.office_hours_buffer_minutes / 60)
-  office_hours_buffer_mins  = var.office_hours_buffer_minutes % 60
-
-  # Calculate effective start time with buffer (e.g., 09:05 UTC with 5-minute buffer)
-  effective_start_hour = local.office_hours_start_hour + local.office_hours_buffer_hours
-  effective_start_min  = local.office_hours_buffer_mins
-
-  # Calculate effective end time with buffer (e.g., 16:55 UTC with 5-minute buffer)
-  # Handle case where buffer minutes cause hour rollback
-  effective_end_hour = local.office_hours_end_hour - local.office_hours_buffer_hours - (local.office_hours_buffer_mins > 0 ? 1 : 0)
-  effective_end_min  = local.office_hours_buffer_mins > 0 ? 60 - local.office_hours_buffer_mins : 0
 
   # Primary office hours expression - simplified to use hour-only logic for CloudWatch compatibility
   # Monday=1, Tuesday=2, ..., Friday=5, Saturday=6, Sunday=7
@@ -291,26 +279,8 @@ locals {
   # Note: Buffer time is applied by adjusting the effective hours (e.g., 09:00-17:00 becomes 10:00-16:00 with 1-hour buffer)
   office_hours_expression = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.office_hours_start_hour + ceil(var.office_hours_buffer_minutes / 60.0)} AND HOUR(m1)<${local.office_hours_end_hour - ceil(var.office_hours_buffer_minutes / 60.0)}),m1)"
 
-  # Simplified hour-only expression for cases where minute precision isn't critical
-  # Uses hour boundaries only, applying buffer at hour level
-  office_hours_expression_simple = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.effective_start_hour} AND HOUR(m1)<=${local.effective_end_hour}),m1)"
-
   # Helper expressions for different office hours scenarios
 
-  # Weekdays only (no time restriction) - useful for daily batch jobs
-  office_hours_weekdays_only = "IF((DAY(m1)>=1 AND DAY(m1)<=5),m1)"
-
-  # Business hours only (no day restriction) - useful for time-sensitive operations
-  office_hours_business_hours_only = "IF((HOUR(m1)>=${local.office_hours_start_hour} AND HOUR(m1)<${local.office_hours_end_hour}),m1)"
-
-  # Standard office hours without buffer - exact 09:00-17:00 Monday-Friday
-  office_hours_no_buffer = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.office_hours_start_hour} AND HOUR(m1)<${local.office_hours_end_hour}),m1)"
-
-  # Extended office hours (07:00-19:00) - for services that need wider monitoring
-  office_hours_extended = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=7 AND HOUR(m1)<19),m1)"
-
-  # 24x7 expression (always returns data) - for continuous monitoring
-  always_active_expression = "m1"
 
   # Missing Data Treatment Standards
   #
@@ -340,4 +310,7 @@ locals {
   #
   # This standardization ensures consistent alarm behavior across all AWS services
   # and reduces false positives while maintaining appropriate alerting sensitivity.
+
+
+  ok_alarm_actions = var.alarm_on_ok ? local.alarm_actions : null
 }

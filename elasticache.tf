@@ -8,7 +8,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   alarm_name                = format("cw-elasticache-%s-cpuutilization", replace(lower(each.value.cluster_id), "/", "-"))
   alarm_description         = "High ElastiCache host CPU; consider scaling nodes or adding replicas/shards."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "CPUUtilization"
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "curr_connections" {
   alarm_name                = format("cw-elasticache-%s-currconnections", replace(lower(each.value.cluster_id), "/", "-"))
   alarm_description         = "ElastiCache connections high; review client pooling/idle timeouts and scale if needed."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "CurrConnections"
@@ -66,7 +66,7 @@ resource "aws_cloudwatch_metric_alarm" "database_memory_usage_percentage" {
   alarm_name                = format("cw-elasticache-%s-databasememoryusagepercentage", replace(lower(each.value.cluster_id), "/", "-"))
   alarm_description         = "ElastiCache memory near limit; expect evictions or write failures—scale capacity or shards."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "DatabaseMemoryUsagePercentage"
@@ -93,7 +93,7 @@ resource "aws_cloudwatch_metric_alarm" "engine_cpu_utilization" {
   alarm_name                = format("cw-elasticache-%s-enginecpuutilization", replace(lower(each.value.cluster_id), "/", "-"))
   alarm_description         = "Redis engine CPU high; check hot keys/commands, add shards or replicas."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "EngineCPUUtilization"
@@ -121,7 +121,7 @@ resource "aws_cloudwatch_metric_alarm" "replication_lag" {
   alarm_name                = format("cw-elasticache-%s-replicationlag", replace(lower(each.value.cluster_id), "/", "-"))
   alarm_description         = "ElastiCache replication lag high; investigate write load and scale replicas/shards."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "ReplicationLag"

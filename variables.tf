@@ -477,3 +477,9 @@ variable "office_hours_buffer_minutes" {
     error_message = "office_hours_buffer_minutes must be between 0 and 30 minutes."
   }
 }
+
+variable "alarm_on_ok" {
+  description = "When true, alarm status changes to OK will cause an alarm to be triggered"
+  type        = bool
+  default     = true
+}

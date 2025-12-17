@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_claimed_account_concurrency" {
   alarm_name                = "cw-lambda-account-claimedaccountconcurrency"
   alarm_description         = "Account concurrency near limit; request increase or reduce RC/PC usage."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 10
@@ -69,7 +69,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_concurrent_executions" {
   alarm_name                = format("cw-lambda-%s-concurrentexecutions", replace(lower(each.value.function_name), "/", "-"))
   alarm_description         = "Function concurrency near account limit; optimize or request increase."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 10
@@ -137,7 +137,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_duration" {
   alarm_name                = format("cw-lambda-%s-duration", replace(lower(each.value.function_name), "/", "-"))
   alarm_description         = "Function duration high; review code, dependencies, and timeout."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 15
@@ -205,7 +205,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   alarm_name                = format("cw-lambda-%s-errors", replace(lower(each.value.function_name), "/", "-"))
   alarm_description         = "Function errors elevated; inspect logs and recent changes."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 3
@@ -273,7 +273,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   alarm_name                = format("cw-lambda-%s-throttles", replace(lower(each.value.function_name), "/", "-"))
   alarm_description         = "Function throttling; increase concurrency or reduce load."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5
