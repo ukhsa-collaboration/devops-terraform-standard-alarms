@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_age_of_oldest_message" {
   alarm_name                = format("cw-sqs-%s-approximateageofoldestmessage", replace(lower(each.value.queue_name), "/", "-"))
   alarm_description         = "Oldest message age high; add or speed up consumers and check DLQ for poison pills."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "ApproximateAgeOfOldestMessage"
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_not_visib
   alarm_name                = format("cw-sqs-%s-approximatenumberofmessagesnotvisible", replace(lower(each.value.queue_name), "/", "-"))
   alarm_description         = "In-flight messages high; ensure consumers delete messages within visibility timeout."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "ApproximateNumberOfMessagesNotVisible"
@@ -62,7 +62,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_visible" 
   alarm_name                = format("cw-sqs-%s-approximatenumberofmessagesvisible", replace(lower(each.value.queue_name), "/", "-"))
   alarm_description         = "Queue backlog growing; add/scale consumers or investigate processing speed."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "ApproximateNumberOfMessagesVisible"
@@ -89,7 +89,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_sent" {
   alarm_name                = format("cw-sqs-%s-numberofmessagessent", replace(lower(each.value.queue_name), "/", "-"))
   alarm_description         = "No messages sent to queue; check producers for failures or traffic drops."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   metric_name               = "NumberOfMessagesSent"

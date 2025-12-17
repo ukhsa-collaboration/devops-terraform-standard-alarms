@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   alarm_name                = format("cw-ecs-%s-cpuutilization", replace(lower(each.value.service_name), "/", "-"))
   alarm_description         = "ECS service CPU high; scale tasks or tune workload."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5
@@ -77,7 +77,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   alarm_name                = format("cw-ecs-%s-memoryutilization", replace(lower(each.value.service_name), "/", "-"))
   alarm_description         = "ECS service memory high; increase task memory or scale out."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5

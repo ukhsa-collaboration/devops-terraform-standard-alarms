@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "error_port_allocation" {
   alarm_name                = format("cw-natgateway-%s-errorportallocation", replace(lower(each.value.nat_gateway_id), "/", "-"))
   alarm_description         = "NAT Gateway cannot allocate ports; reduce connections or scale gateways."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 15
@@ -77,7 +77,7 @@ resource "aws_cloudwatch_metric_alarm" "packets_drop_count" {
   alarm_name                = format("cw-natgateway-%s-packetsdropcount", replace(lower(each.value.nat_gateway_id), "/", "-"))
   alarm_description         = "Packets dropped by NAT Gateway; check service health and throughput."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
 

@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
   alarm_name                = format("cw-alb-%s-target-5xx", each.value.load_balancer_name)
   alarm_description         = "Application Load Balancer is returning 5XX responses"
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 1
@@ -76,7 +76,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
   alarm_name                = format("cw-alb-%s-targetresponsetime", each.value.target_group_name)
   alarm_description         = "Application Load Balancer target response time is elevated"
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 3

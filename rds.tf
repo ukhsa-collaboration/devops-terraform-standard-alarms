@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_buffer_cache_hit_ratio" {
   alarm_name                = format("cw-rds-%s-buffercachehitratio", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "Buffer cache hit ratio low; investigate queries and memory sizing."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 10
@@ -76,7 +76,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_utilization" {
   alarm_name                = format("cw-rds-%s-cpuutilization", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "DB CPU high; tune queries or scale instance class."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5
@@ -144,7 +144,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_database_connections" {
   alarm_name                = format("cw-rds-%s-databaseconnections", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "DB connections near limit; pool or scale instance."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5
@@ -213,7 +213,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_db_load" {
   alarm_name                = format("cw-rds-%s-dbload", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "DB load high; reduce concurrent work or scale."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 15
@@ -282,7 +282,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_engine_uptime" {
   alarm_name                = format("cw-rds-%s-engineuptime", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "Writer downtime detected; check failover or maintenance."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 2
@@ -353,7 +353,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_freeable_memory" {
   alarm_name                = format("cw-rds-%s-freeablememory", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "Freeable memory low; optimize workload or scale memory."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 15
@@ -422,7 +422,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_maximum_used_transaction_ids" {
   alarm_name                = format("cw-rds-%s-maximumusedtransactionids", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "TXID age high; ensure autovacuum keeping up."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 1
@@ -491,7 +491,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   alarm_name                = format("cw-rds-%s-readlatency", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "Read latency high; review I/O and storage performance."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5
@@ -560,7 +560,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_storage_network_throughput" {
   alarm_name                = format("cw-rds-%s-storagenetworkthroughput", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "Storage network throughput high; optimize I/O or scale instance."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5
@@ -631,7 +631,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   alarm_name                = format("cw-rds-%s-writelatency", replace(lower(each.value.identifier), "/", "-"))
   alarm_description         = "Write latency is high. Review I/O usage, storage configuration, and instance capacity. For RDS, check EBS IOPS; for Aurora, consider I/O-Optimized storage."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 5

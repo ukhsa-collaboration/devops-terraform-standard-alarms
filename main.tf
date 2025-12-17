@@ -340,4 +340,7 @@ locals {
   #
   # This standardization ensures consistent alarm behavior across all AWS services
   # and reduces false positives while maintaining appropriate alerting sensitivity.
+
+
+  ok_alarm_actions = var.alarm_on_ok ? local.alarm_actions : null
 }

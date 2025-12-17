@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_5xx_error_rate" {
   alarm_name        = format("cw-cloudfront-%s-5xxerrorrate", lower(each.value.distribution_id))
   alarm_description = "CloudFront 5xx rate high; check origin health and errors."
   actions_enabled   = true
-  # ok_actions                = local.alarm_actions
+  # ok_actions                = local.ok_alarm_actions
   # alarm_actions             = local.alarm_actions
   # insufficient_data_actions = local.alarm_actions
   metric_name = "5xxErrorRate"
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_origin_latency" {
   alarm_name        = format("cw-cloudfront-%s-originlatency", lower(each.value.distribution_id))
   alarm_description = "Origin latency high; investigate origin response times/timeouts."
   actions_enabled   = true
-  # ok_actions                = local.alarm_actions
+  # ok_actions                = local.ok_alarm_actions
   # alarm_actions             = local.alarm_actions
   # insufficient_data_actions = local.alarm_actions
   metric_name        = "OriginLatency"

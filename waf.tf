@@ -4,7 +4,7 @@ resource "aws_cloudwatch_metric_alarm" "waf_blocked_requests" {
   alarm_name                = format("cw-waf-%s-blockedrequests", replace(lower(each.value.name), "/", "-"))
   alarm_description         = "Blocked requests spiking; review WAF rules and traffic."
   actions_enabled           = true
-  ok_actions                = local.alarm_actions
+  ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
   evaluation_periods        = 1
