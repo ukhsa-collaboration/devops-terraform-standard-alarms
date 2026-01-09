@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_buffer_cache_hit_ratio" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 10
   datapoints_to_alarm       = 10
   threshold                 = var.rds_buffer_cache_hit_ratio_threshold
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_utilization" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.rds_cpu_utilization_threshold
@@ -146,7 +146,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_database_connections" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.rds_database_connections_threshold
@@ -215,7 +215,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_db_load" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 15
   datapoints_to_alarm       = 15
   threshold                 = var.rds_db_load_threshold
@@ -284,7 +284,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_engine_uptime" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 2
   datapoints_to_alarm       = 2
   threshold                 = 0
@@ -355,7 +355,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_freeable_memory" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 15
   datapoints_to_alarm       = 15
   threshold                 = var.rds_freeable_memory_threshold
@@ -424,7 +424,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_maximum_used_transaction_ids" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
   threshold                 = var.rds_maximum_used_transaction_ids_threshold
@@ -493,7 +493,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.rds_read_latency_threshold
@@ -562,7 +562,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_storage_network_throughput" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.rds_storage_network_throughput_threshold
@@ -633,7 +633,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.rds_write_latency_threshold

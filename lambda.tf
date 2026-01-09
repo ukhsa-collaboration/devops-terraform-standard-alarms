@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_claimed_account_concurrency" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 10
   datapoints_to_alarm       = 10
   threshold                 = var.lambda_claimed_account_concurrency_threshold
@@ -71,7 +71,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_concurrent_executions" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 10
   datapoints_to_alarm       = 10
   threshold                 = var.lambda_concurrent_executions_threshold
@@ -139,7 +139,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_duration" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 15
   datapoints_to_alarm       = 15
   threshold                 = var.lambda_duration_threshold
@@ -207,7 +207,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 3
   datapoints_to_alarm       = 3
   threshold                 = var.lambda_errors_threshold
@@ -275,7 +275,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.lambda_throttles_threshold

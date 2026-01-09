@@ -11,14 +11,15 @@ Configure alarms to only evaluate during business hours to prevent alerts during
 module "alarms" {
   source = "git@github.com:ukhsa-collaboration/devops-terraform-standard-alarms.git"
 
-  # Enable office hours scheduling (Monday-Friday 09:00-17:00 UTC)
+  # Enable office hours scheduling (Monday-Friday 09:00-18:00 UTC)
   alarm_schedule = "OfficeHours"
 }
 ```
 
 - **24x7 Mode** (default): Alarms evaluate continuously
-- **OfficeHours Mode**: Alarms only evaluate Monday-Friday 09:00-17:00 UTC
-- **Buffer Time**: Grace period before/after office hours to allow for normal startup/shutdown processes
+- **OfficeHours Mode**: Alarms only evaluate Monday-Friday 09:00-17:59 UTC (hours 9-17)
+  - Outside office hours, alarms go to INSUFFICIENT_DATA state but do not take any actions so don't send notifications. This prevents false alerts during expected downtime periods
+- **Buffer Time**: Currently documented for future minute-level precision but not applied to avoid over-restriction
 
 ### Missing Data Treatment Standards
 The module applies consistent missing data treatment based on alarm type:

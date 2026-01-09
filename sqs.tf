@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_age_of_oldest_message" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "ApproximateAgeOfOldestMessage"
   namespace                 = "AWS/SQS"
   statistic                 = "Maximum"
@@ -36,7 +36,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_not_visib
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "ApproximateNumberOfMessagesNotVisible"
   namespace                 = "AWS/SQS"
   statistic                 = "Average"
@@ -64,7 +64,7 @@ resource "aws_cloudwatch_metric_alarm" "approximate_number_of_messages_visible" 
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "ApproximateNumberOfMessagesVisible"
   namespace                 = "AWS/SQS"
   statistic                 = "Average"
@@ -91,7 +91,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_sent" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "NumberOfMessagesSent"
   namespace                 = "AWS/SQS"
   statistic                 = "Sum"

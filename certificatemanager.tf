@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "DaysToExpiry"
   namespace                 = "AWS/CertificateManager"
   statistic                 = "Minimum"
@@ -36,7 +36,7 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry_cdn" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "DaysToExpiry"
   namespace                 = "AWS/CertificateManager"
   statistic                 = "Minimum"

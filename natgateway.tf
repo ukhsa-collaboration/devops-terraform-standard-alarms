@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "error_port_allocation" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 15
   datapoints_to_alarm       = 15
   threshold                 = var.natgateway_error_port_allocation_threshold
@@ -79,7 +79,7 @@ resource "aws_cloudwatch_metric_alarm" "packets_drop_count" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
 
   dynamic "metric_query" {
     for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []

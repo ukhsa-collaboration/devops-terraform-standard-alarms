@@ -266,18 +266,22 @@ locals {
 
   alarm_actions = compact([local.sns_topic_arn])
 
+  # Conditional insufficient data actions - empty during office hours mode to prevent
+  # notifications when alarms go to INSUFFICIENT_DATA outside office hours
+  insufficient_data_actions = var.alarm_schedule == "OfficeHours" ? [] : compact([local.sns_topic_arn])
+
   enabled_during_office_hours = var.alarm_schedule == "OfficeHours" ? ["OfficeHours"] : []
 
   # Office hours configuration constants
-  office_hours_start_hour = 9  # 09:00 UTC
-  office_hours_end_hour   = 17 # 17:00 UTC (5:00 PM)
+  office_hours_start_hour = 9  # 09:00 UTC (inclusive)
+  office_hours_end_hour   = 18 # 18:00 UTC (exclusive - so alarms stop at 17:59)
 
 
   # Primary office hours expression - simplified to use hour-only logic for CloudWatch compatibility
   # Monday=1, Tuesday=2, ..., Friday=5, Saturday=6, Sunday=7
-  # Active during: Monday-Friday, with buffer time applied at hour boundaries
-  # Note: Buffer time is applied by adjusting the effective hours (e.g., 09:00-17:00 becomes 10:00-16:00 with 1-hour buffer)
-  office_hours_expression = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.office_hours_start_hour + ceil(var.office_hours_buffer_minutes / 60.0)} AND HOUR(m1)<${local.office_hours_end_hour - ceil(var.office_hours_buffer_minutes / 60.0)}),m1)"
+  # Active during: Monday-Friday, 09:00-17:59 UTC (hour 9 through hour 17)
+  # Note: Buffer time is documented but not applied at hour level to avoid over-restriction
+  office_hours_expression = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.office_hours_start_hour} AND HOUR(m1)<${local.office_hours_end_hour}),m1)"
 
   # Helper expressions for different office hours scenarios
 
