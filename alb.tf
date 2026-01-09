@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
   threshold                 = var.alb_target_5xx_threshold
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 3
   datapoints_to_alarm       = 3
   threshold                 = var.alb_target_response_time_threshold

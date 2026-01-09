@@ -11,7 +11,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_5xx_error_rate" {
   actions_enabled   = true
   # ok_actions                = local.ok_alarm_actions
   # alarm_actions             = local.alarm_actions
-  # insufficient_data_actions = local.alarm_actions
+  # insufficient_data_actions = local.insufficient_data_actions
   metric_name = "5xxErrorRate"
   namespace   = "AWS/CloudFront"
   statistic   = "Average"
@@ -40,7 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "cloudfront_origin_latency" {
   actions_enabled   = true
   # ok_actions                = local.ok_alarm_actions
   # alarm_actions             = local.alarm_actions
-  # insufficient_data_actions = local.alarm_actions
+  # insufficient_data_actions = local.insufficient_data_actions
   metric_name        = "OriginLatency"
   namespace          = "AWS/CloudFront"
   extended_statistic = "p90"

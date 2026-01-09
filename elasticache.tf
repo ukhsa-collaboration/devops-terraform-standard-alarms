@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "CPUUtilization"
   namespace                 = "AWS/ElastiCache"
   statistic                 = "Average"
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_metric_alarm" "curr_connections" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "CurrConnections"
   namespace                 = "AWS/ElastiCache"
   statistic                 = "Average"
@@ -68,7 +68,7 @@ resource "aws_cloudwatch_metric_alarm" "database_memory_usage_percentage" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "DatabaseMemoryUsagePercentage"
   namespace                 = "AWS/ElastiCache"
   statistic                 = "Average"
@@ -95,7 +95,7 @@ resource "aws_cloudwatch_metric_alarm" "engine_cpu_utilization" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "EngineCPUUtilization"
   namespace                 = "AWS/ElastiCache"
   statistic                 = "Average"
@@ -123,7 +123,7 @@ resource "aws_cloudwatch_metric_alarm" "replication_lag" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "ReplicationLag"
   namespace                 = "AWS/ElastiCache"
   statistic                 = "Average"

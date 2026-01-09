@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.ecs_cpu_utilization_threshold
@@ -79,7 +79,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
   threshold                 = var.ecs_memory_utilization_threshold

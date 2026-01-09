@@ -13,7 +13,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_messages_published" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "NumberOfMessagesPublished"
   namespace                 = "AWS/SNS"
   statistic                 = "Sum"
@@ -40,7 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_delivered" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "NumberOfNotificationsDelivered"
   namespace                 = "AWS/SNS"
   statistic                 = "Sum"
@@ -67,7 +67,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_delivered_anomal
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   comparison_operator       = "LessThanLowerThreshold"
   evaluation_periods        = 5
   datapoints_to_alarm       = 5
@@ -108,7 +108,7 @@ resource "aws_cloudwatch_metric_alarm" "number_of_notifications_failed" {
   actions_enabled           = true
   ok_actions                = local.ok_alarm_actions
   alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.alarm_actions
+  insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "NumberOfNotificationsFailed"
   namespace                 = "AWS/SNS"
   statistic                 = "Sum"
