@@ -22,7 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_buffer_cache_hit_ratio" {
       id = "m2"
       # Ignore scaled-to-zero/idle periods in dev: BufferCacheHitRatio can report 0
       # with no active sessions, which would otherwise create false low-ratio alarms.
-      expression  = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.office_hours_start_hour} AND HOUR(m1)<${local.office_hours_end_hour} AND m3>0),m1)"
+      expression  = local.buffer_cache_hit_ratio_office_hours_expression
       label       = "BufferCacheHitRatioOfficeHours"
       return_data = true
     }
