@@ -285,6 +285,9 @@ locals {
 
   # Helper expressions for different office hours scenarios
 
+  # BufferCacheHitRatio-specific expression that includes DatabaseConnections check (m3>0)
+  # to prevent false alarms during idle periods when BufferCacheHitRatio can report 0
+  buffer_cache_hit_ratio_office_hours_expression = "IF((DAY(m1)>=1 AND DAY(m1)<=5 AND HOUR(m1)>=${local.office_hours_start_hour} AND HOUR(m1)<${local.office_hours_end_hour} AND m3>0),m1)"
 
   # Missing Data Treatment Standards
   #

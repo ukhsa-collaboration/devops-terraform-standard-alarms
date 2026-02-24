@@ -19,10 +19,31 @@ resource "aws_cloudwatch_metric_alarm" "rds_buffer_cache_hit_ratio" {
   dynamic "metric_query" {
     for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
     content {
-      id          = "m2"
-      expression  = local.office_hours_expression
+      id = "m2"
+      # Ignore scaled-to-zero/idle periods in dev: BufferCacheHitRatio can report 0
+      # with no active sessions, which would otherwise create false low-ratio alarms.
+      expression  = local.buffer_cache_hit_ratio_office_hours_expression
       label       = "BufferCacheHitRatioOfficeHours"
       return_data = true
+    }
+  }
+
+  dynamic "metric_query" {
+    for_each = length(local.enabled_during_office_hours) > 0 ? [1] : []
+    content {
+      id          = "m3"
+      return_data = false
+
+      metric {
+        metric_name = "DatabaseConnections"
+        namespace   = "AWS/RDS"
+        period      = 60
+        stat        = "Average"
+
+        dimensions = {
+          DBInstanceIdentifier = each.value.identifier
+        }
+      }
     }
   }
 
