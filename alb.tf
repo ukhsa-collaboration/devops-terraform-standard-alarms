@@ -108,7 +108,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
         stat        = "p99"
 
         dimensions = {
-          TargetGroup = each.value.target_group_dimension
+          TargetGroup  = each.value.target_group_dimension
           LoadBalancer = each.value.load_balancer_dimension
         }
       }
@@ -128,7 +128,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
         stat        = "p99"
 
         dimensions = {
-          TargetGroup = each.value.target_group_dimension
+          TargetGroup  = each.value.target_group_dimension
           LoadBalancer = each.value.load_balancer_dimension
         }
       }

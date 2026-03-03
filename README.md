@@ -168,7 +168,7 @@ No modules.
 | <a name="input_project_tag_value"></a> [project\_tag\_value](#input\_project\_tag\_value) | Tag value used to identify project resources for alarm discovery. | `string` | `null` | no |
 | <a name="input_rds_buffer_cache_hit_ratio_threshold"></a> [rds\_buffer\_cache\_hit\_ratio\_threshold](#input\_rds\_buffer\_cache\_hit\_ratio\_threshold) | Threshold for RDS BufferCacheHitRatio alarms. | `number` | `80` | no |
 | <a name="input_rds_cpu_utilization_threshold"></a> [rds\_cpu\_utilization\_threshold](#input\_rds\_cpu\_utilization\_threshold) | Threshold for RDS CPUUtilization alarms. | `number` | `90` | no |
-| <a name="input_rds_database_connections_threshold"></a> [rds\_database\_connections\_threshold](#input\_rds\_database\_connections\_threshold) | Threshold for RDS DatabaseConnections alarms. | `number` | `1000` | no |
+| <a name="input_rds_database_connections_threshold"></a> [rds\_database\_connections\_threshold](#input\_rds\_database\_connections\_threshold) | Threshold for RDS DatabaseConnections alarms. | `number` | `50` | no |
 | <a name="input_rds_db_load_threshold"></a> [rds\_db\_load\_threshold](#input\_rds\_db\_load\_threshold) | Threshold for RDS DBLoad alarms. | `number` | `4` | no |
 | <a name="input_rds_freeable_memory_threshold"></a> [rds\_freeable\_memory\_threshold](#input\_rds\_freeable\_memory\_threshold) | Threshold for RDS FreeableMemory alarms. | `number` | `500000000` | no |
 | <a name="input_rds_maximum_used_transaction_ids_threshold"></a> [rds\_maximum\_used\_transaction\_ids\_threshold](#input\_rds\_maximum\_used\_transaction\_ids\_threshold) | Threshold for RDS MaximumUsedTransactionIDs alarms. | `number` | `1000000000` | no |
