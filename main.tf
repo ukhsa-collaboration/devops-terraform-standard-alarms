@@ -263,7 +263,7 @@ locals {
       target_group_dimension = format("targetgroup/%s", element(split("targetgroup/", target_group_arn), 1))
       target_group_name      = replace(lower(format("targetgroup/%s", element(split("targetgroup/", target_group_arn), 1))), "/", "-")
       load_balancer_dimension = element(
-        split("loadbalancer/", target_group.load_balancer_arns[0]),
+        split("loadbalancer/", sort(tolist(target_group.load_balancer_arns))[0]),
         1
       )
     }
