@@ -21,7 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
     content {
       id          = "m2"
       expression  = local.office_hours_expression
-      label       = "HTTPCode_Target_5XX_CountOfficeHours"
+      label       = "HTTPCode_ELB_5XX_Count_CountOfficeHours"
       return_data = true
     }
   }
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
       return_data = false
 
       metric {
-        metric_name = "HTTPCode_Target_5XX_Count"
+        metric_name = "HTTPCode_ELB_5XX_Count"
         namespace   = "AWS/ApplicationELB"
         period      = 300
         stat        = "Sum"
@@ -52,7 +52,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_5xx" {
       return_data = true
 
       metric {
-        metric_name = "HTTPCode_Target_5XX_Count"
+        metric_name = "HTTPCode_ELB_5XX_Count"
         namespace   = "AWS/ApplicationELB"
         period      = 300
         stat        = "Sum"
@@ -105,10 +105,11 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
         metric_name = "TargetResponseTime"
         namespace   = "AWS/ApplicationELB"
         period      = 60
-        stat        = "Average"
+        stat        = "p99"
 
         dimensions = {
-          TargetGroup = each.value.target_group_dimension
+          TargetGroup  = each.value.target_group_dimension
+          LoadBalancer = each.value.load_balancer_dimension
         }
       }
     }
@@ -124,10 +125,11 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
         metric_name = "TargetResponseTime"
         namespace   = "AWS/ApplicationELB"
         period      = 60
-        stat        = "Average"
+        stat        = "p99"
 
         dimensions = {
-          TargetGroup = each.value.target_group_dimension
+          TargetGroup  = each.value.target_group_dimension
+          LoadBalancer = each.value.load_balancer_dimension
         }
       }
     }

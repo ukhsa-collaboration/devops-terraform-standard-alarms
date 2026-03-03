@@ -211,7 +211,7 @@ variable "rds_cpu_utilization_threshold" {
 variable "rds_database_connections_threshold" {
   description = "Threshold for RDS DatabaseConnections alarms."
   type        = number
-  default     = 1000
+  default     = 50
 
   validation {
     condition     = var.rds_database_connections_threshold >= 0
