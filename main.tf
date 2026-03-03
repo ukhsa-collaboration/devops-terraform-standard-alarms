@@ -144,6 +144,17 @@ data "aws_elasticache_cluster" "discovered" {
   cluster_id = replace(each.key, "cluster:", "")
 }
 
+data "aws_lb_target_group" "discovered" {
+  for_each = {
+    for mapping in data.aws_resourcegroupstaggingapi_resources.application_load_balancer_target_groups.resource_tag_mapping_list :
+    mapping.resource_arn => {
+      arn = mapping.resource_arn
+    }
+  }
+
+  arn = each.key
+}
+
 locals {
   project_tag_key    = coalesce(var.project_tag_key, "lz:Service")
   project_tag_values = var.project_tag_value == null ? null : [var.project_tag_value]
@@ -247,11 +258,16 @@ locals {
   }
 
   application_load_balancer_target_groups = {
-    for mapping in data.aws_resourcegroupstaggingapi_resources.application_load_balancer_target_groups.resource_tag_mapping_list :
-    mapping.resource_arn => {
-      target_group_dimension = format("targetgroup/%s", element(split("targetgroup/", mapping.resource_arn), 1))
-      target_group_name      = replace(lower(format("targetgroup/%s", element(split("targetgroup/", mapping.resource_arn), 1))), "/", "-")
+    for target_group_arn, target_group in data.aws_lb_target_group.discovered :
+    target_group_arn => {
+      target_group_dimension = format("targetgroup/%s", element(split("targetgroup/", target_group_arn), 1))
+      target_group_name      = replace(lower(format("targetgroup/%s", element(split("targetgroup/", target_group_arn), 1))), "/", "-")
+      load_balancer_dimension = element(
+        split("loadbalancer/", target_group.load_balancer_arns[0]),
+        1
+      )
     }
+    if length(target_group.load_balancer_arns) > 0
   }
 
   sns_topic_arn = coalesce(
