@@ -34,9 +34,10 @@ resource "aws_cloudwatch_metric_alarm" "days_to_expiry_cdn" {
   alarm_name                = format("cw-acm-%s-daystoexpiry", replace(lower(element(split("/", each.value.certificate_arn), length(split("/", each.value.certificate_arn)) - 1)), ":", "-"))
   alarm_description         = "Certificate nearing expiry; renew or re-import soon to avoid outages."
   actions_enabled           = true
-  ok_actions                = local.ok_alarm_actions
-  alarm_actions             = local.alarm_actions
-  insufficient_data_actions = local.insufficient_data_actions
+  # TODO: Create a relay Lambda inside of us-east-1 so that these alarms can be forwarded.
+  # ok_actions                = local.ok_alarm_actions
+  # alarm_actions             = local.alarm_actions
+  # insufficient_data_actions = local.insufficient_data_actions
   metric_name               = "DaysToExpiry"
   namespace                 = "AWS/CertificateManager"
   statistic                 = "Minimum"
